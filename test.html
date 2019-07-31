@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>冒泡排序</title>
+</head>
+
+<body>
+    <script>
+        let arr = [5, 4, 3, 2, 1]
+        function bubbleSort(arr) {
+            let numberOfRounds = arr.length
+            for (let i = 1; i < anumberOfRounds; i++) {
+                let numberOfInnerLoops = arr.length - 1 - i
+                for (let j = 0; j <= numberOfInnerLoops; j++) {
+                    if (arr[j] > arr[j + 1]) {
+                        // 交换位置
+                        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+                    }
+                }
+            }
+            return arr
+        }
+        bubbleSort(arr)
+    </script>
+</body>
+
+</html>
