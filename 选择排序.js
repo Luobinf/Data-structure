@@ -1,9 +1,8 @@
 //二.选择排序
-//选择排序是先找出数据结构中的最小值并于数据结构的第一个元素交换，然后再从剩下的元素中找出最小值，与第二个元素交换位置...依次类推
+//选择排序是先找出数据结构中所有元素的最小值并和数据结构中的第一个元素交换，然后再从剩下的元素中找出最小值，与第二个元素交换位置...依次类推
 let arr = [5,4,3,2,1]
 function selectSort(arr) {
-    let minIndex
-    let t
+    let minIndex,t
     for (let j=1;j<arr.length;j++) {
         minIndex = j-1
         for (let i=j;i<arr.length;i++) {
