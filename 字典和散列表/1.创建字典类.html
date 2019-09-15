@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>字典和散列表</title>
+</head>
+
+<body>
+    <script>
+        //一。字典
+        //在集合中，我们感兴趣的是每个值本身，并把它当做主要元素。在字典中，我们用键值对的形式来存储数据。在散列表中也一样。但是
+        //两种数据结构的实现方式略有不同，例如字典中的每一个键只能有一个值。
+
+        //集合表示一组互不相同的元素(不重复的元素)。在字典中，存储的是键值对的形式，其中键名是用来查询特定元素的。字典和集合很像，
+        //集合以值值的形式存储元素，字典则是以键值的形式来存储元素。字典也称作映射、符号表或关联数组。
+
+        //二。创建字典类
+        function defaultToString(item) {
+            if (item === null) {
+                return 'NULL'
+            } else if (item === undefined) {
+                return 'UNDEFINED'
+            } else if (typeof item === 'string' || item instanceof String) {
+                return `${item}`
+            } else {
+                return item.toString()
+            }
+        }
+
+
+        //声明一些字典所能使用的方法。
+        //例如：set(key, value)
+
+        //1. 检测一个键是否存在于字典中: hasKey(Key)
+        class Dictionary {
+            constructor(toStrFn = defaultToString) {
+                this.toStrFn = toStrFn
+                this.table = {}
+            }
+
+            hasKey(key) {
+                return this.table[this.toStrFn(key)] != null
+            }
+
+            set(key, value) {
+                if (key != null && value != null) {
+                    const tableKey = this.toStrFn(key)
+                    this.table[tableKey] = new valuePair(key, value)
+                    return true
+                } else {
+                    return false
+                }
+            }
+
+            //从字典中移除一个值
+            remove(key) {
+                if (this.hasKey(key)) {
+                    delete this.table[this.toStrFn(key)]
+                    return true
+                } else {
+                    return false
+                }
+            }
+
+            //从字典中检索一个值
+            get(key) {
+                const valuePair = this.table[this.toStrFn(key)]
+                return valuePair == null ? undefined : valuePair.value
+            }
+
+            //keys、values、valuePairs方法
+            keyValues() {
+                return Object.values(this.table)
+            }
+
+            //该方法用于返回Dictionary类中用于识别值的所有(原始)键名，如下所示。
+            keys() {
+                return this.keyValues().map(valuePair => valuePair.key)
+            }
+
+            //该方法用于返回一个字典包含的所有值构成的数组，与keys方法类似。
+            values() {
+                return this.keyValues().map(valuePair => valuePair.value)
+            }
+
+            //用forEach迭代字典中的每一个键值对。
+            forEach(callbackFn) {
+                const valuePairs = this.keyValues()
+                for (let i = 0; i < valuePairs.length; i++) {
+                    const result = callbackFn(valuePairs[i].key, valuePairs[i].value)
+                    if (result === false) {
+                        break
+                    }
+                }
+            }
+
+            //返回字典中的值的个数
+            size() {
+                return Object.keys(this.table).length
+            }
+
+            isEmpty() {
+                return this.size() === 0
+            }
+
+            clear() {
+                this.table = {}
+            }
+
+            toString() {
+                if (this.isEmpty()) {
+                    return ''
+                }
+                const valuePairs = this.keyValues()
+                let objString = `${valuePairs[0].toString()}`
+                for (let i = 1; i < valuePairs.length; i++) {
+                    objString = `${objString},${valuePairs[i].toString()}`
+                }
+                return objString
+            }
+        }
+
+        //2.因为ES6之前对象的键只能保存字符串的形式，故为了保存原始的key，实例化一个valuePair类。
+        //也即字典中不仅保存value，而是要保存两个值：原始的key和value。
+        class valuePair {
+            constructor(key, value) {
+                this.key = key
+                this.value = value
+            }
+            toString() {
+                return `[#${this.key}: ${this.value}]`
+            }
+        }
+    </script>
+</body>
+
+</html>

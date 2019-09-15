@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>散列表（也称hash表）</title>
+</head>
+
+<body>
+    <script>
+
+        //维基百科:散列表（Hash table，也叫哈希表），是根据键（Key）而直接访问在内存存储位置的数据结构。
+        //        也就是说，它通过计算一个关于键值的函数，将所需查询的数据映射到表中一个位置来访问记录，这加快了查找速度。
+        //        这个映射函数称做散列函数，存放记录的数组称做散列表。
+
+        function defaultToString(item) {
+            if (item === null) {
+                return 'NULL'
+            } else if (item === undefined) {
+                return 'UNDEFINED'
+            } else if (typeof item === 'string' || item instanceof String) {
+                return `${item}`
+            } else {
+                return item.toString()
+            }
+        }
+
+
+        //一.创建散列表
+        class HashTable {
+            constructor(toStrFn = defaultToString) {
+                this.toStrFn = toStrFn
+                this.table = {}
+            }
+
+            //首先来实现散列函数
+            loseloseHashCode (key) {
+                if (typeof key === 'number') {
+                    return key
+                }
+                const tableKey = this.toStrFn(key)
+                let hash = 0
+                for (let i = 0; i < tableKey.length; i++) {
+                    hash += hash.charCodeAt(i)
+                }
+                return hash % 37
+            }
+
+            hashCode (key) {
+                return this.loseloseHashCode(key)
+            }
+
+            //将键和值加入散列表
+            
+        }
+        //然后给类添加一些方法。我们给每一个类实现三个基本方法。
+        //1 put(key, value): 向散列表中增加一个新的项(也能更新散列表)
+        //2 remove (key) : 根据键值从散列表中移除值。
+        //3 get (key) : 返回根据键值检索到的特定的值。
+
+
+    </script>
+</body>
+
+</html>

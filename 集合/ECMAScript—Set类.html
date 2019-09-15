@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ES6中的Set类</title>
+</head>
+<body>
+    <script>
+
+        //一。ES6新增了Set类作为JS API的一部分。我们可以基于ES6的Set类来开发我们的Set类。
+        // const set = new Set()
+        // set.add(1)
+        // console.log(set)
+        // console.log(set.values())
+        // console.log(set.has(1))
+        // console.log(set.has(2))
+        // console.log(set.size)
+        
+        //2.ES6 Set类的运算
+        //我们的Set类实现了并集、交集、差集、子集等数学运算，然而ES6原生的Set类并没有这些功能。不过，我们也可以模拟。
+
+        const setA = new Set()
+        setA.add(1)
+        setA.add(2)
+        setA.add(3)
+
+        const setB = new Set()
+        setB.add(2)
+        setB.add(3)
+        setB.add(4)
+        console.log(setA)
+
+        //1.模拟并集运算
+        //我们可以创建一个函数，来返回包含setA和setB中所有元素的新集合。迭代这两个集合，把所有元素都添加到并集的集合中。
+        const union = (setA, setB) => {
+            const unionAB = new Set()
+            setA.forEach(element => {
+              unionAB.add(element)  
+            })
+            setB.forEach( element => {
+                unionAB.add(element)
+            })
+            return unionAB
+        }
+        console.log(union(setA, setB))
+
+        //2.模拟交集运算
+        const intersection = (setA, setB) => {
+            const intersectionAB = new Set()
+            setA.forEach( element => {
+                if (setB.has(element)) {
+                    intersectionAB.add(element)
+                }
+            })
+            return intersectionAB
+        }
+
+        //3.模拟差集运算
+        const difference = (setA, setB) => {
+            const differenceAB = new Set()
+            setA.forEach( element => {
+                if (!setB.has(element)) {
+                    differenceAB.add(element)
+                }
+            })
+            return differenceAB
+        }
+
+        //4.使用扩展运算符
+        //使用扩展运算符可以很方便的进行并集，交集，差集的运算。
+        //4.1使用扩展运算符实现并集
+        console.log(new Set([...setA,...setB]))
+
+        //4.2使用扩展运算符实现交集
+        console.log(new Set([...setA].filter( element => {
+            if (setB.has(element)) {
+                return true
+            } else {
+                return false
+            }
+        })))
+
+        //4.3使用扩展运算符来实现差集运算
+        console.log(new Set([...setA].filter( element => {
+            return !setB.has(element) ? true : false
+        })))
+    </script>
+</body>
+</html>

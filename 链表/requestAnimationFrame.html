@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>requestAnimationFrame</title>
+    <style>
+        .box{
+            height: 100px;
+            width: 100px;
+            background-color: skyblue;
+        }
+    </style>
+</head>
+<body>
+    <div class="box"></div>
+    <script>
+        let start = null
+        let element = document.querySelector('.box')
+        element.style.position = 'absolute'
+        
+        function step(timestamp) {
+            if (!start) {
+                start = timestamp
+            }
+            let progress = timestamp - start
+            console.log(timestamp)
+            // console.log(progress)
+            element.style.left = Math.min(progress / 10, 200) + 'px'
+            if (progress < 2000) {
+                window.requestAnimationFrame(step)
+            }
+        }
+        window.requestAnimationFrame(step)
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>异步</title>
+</head>
+
+<body>
+    <p id="clock"></p>
+    <script>
+        // function taskAsync(callback) {
+        //     let timerId = setTimeout(() => {
+        //         callback('异步任务的结果')
+        //     }, 3000)
+        //     return timerId
+        // }
+
+        //一。下面这个函数就是回调函数
+        //function (result) {
+        //     console.log(result)
+        // }
+
+        // taskAsync(function (result) {
+        //     console.log(result)
+        // })
+        // console.log(888)
+
+        //二。什么情况下需要用到异步？
+        //浏览器是多线程的，浏览器有http请求线程，可以处理http的一些问题。
+
+
+        //三。js引擎是单线程的，即不能同时做两件事情。
+        function sayHi(who) {
+            console.log(`Hello,${who}!`)
+        }
+        setTimeout(sayHi, 2000, 'Mr.huang')
+
+        setTimeout((result) => {
+            console.log(result)
+        }, 3000, 'hello china')
+
+
+        function displayTime () {
+            let date = new Date()
+            let time = date.toLocaleTimeString()
+            clock.textContent = time
+        }
+        
+        displayTime()
+        setInterval(() => {
+            displayTime()
+        }, 1000)
+    </script>
+</body>
+
+</html>
