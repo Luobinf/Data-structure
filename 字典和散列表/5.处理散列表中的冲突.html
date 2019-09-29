@@ -5,16 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>散列表（也称hash表）</title>
+    <title>处理散列表中的冲突</title>
 </head>
 
 <body>
     <script>
-
-        //维基百科:散列表（Hash table，也叫哈希表），是根据键（Key）而直接访问在内存存储位置的数据结构。
-        //        也就是说，它通过计算一个关于键值的函数，将所需查询的数据映射到表中一个位置来访问记录，这加快了查找速度。
-        //        这个映射函数称做散列函数，存放记录的数组称做散列表。
-
         function defaultToString(item) {
             if (item === null) {
                 return 'NULL'
@@ -37,7 +32,6 @@
             }
         }
 
-        //一.创建散列表
         class HashTable {
             constructor(toStrFn = defaultToString) {
                 this.toStrFn = toStrFn
@@ -45,7 +39,7 @@
             }
 
             //首先来实现散列函数
-            loseloseHashCode (key) {
+            loseloseHashCode(key) {
                 if (typeof key === 'number') {
                     return key
                 }
@@ -57,12 +51,12 @@
                 return hash % 37
             }
 
-            hashCode (key) {
+            hashCode(key) {
                 return this.loseloseHashCode(key)
             }
 
             //将键和值加入散列表
-            put (key, value) {
+            put(key, value) {
                 if (key != null && value != null) {
                     const position = this.hashCode(key)
                     this.table[position] = new valuePair(key, value)
@@ -73,13 +67,13 @@
             }
 
             //从散列表中获取一个值
-            get (key) {
+            get(key) {
                 const valuePair = this.table[this.hashCode(key)]
                 return valuePair == null ? undefined : valuePair.value
             }
 
             //从散列表中移除一个值
-            remove (key) {
+            remove(key) {
                 const hash = this.hashCode(key)
                 const valuePair = this.table[hash]
                 if (valuePair != null) {
@@ -89,14 +83,39 @@
                     return false
                 }
             }
-        }
-        //然后给类添加一些方法。我们给每一个类实现三个基本方法。
-        //1 put(key, value): 向散列表中增加一个新的项(也能更新散列表)
-        //2 remove (key) : 根据键值从散列表中移除值。
-        //3 get (key) : 返回根据键值检索到的特定的值。
 
-        let hash = new HashTable()
-        console.log(hash.hashCode('aA'))
+            isEmpty() {
+                return Object.keys(this.table).length === 0
+            }
+
+            //将HashTable实例的结果转成字符串的形式。
+            toString () {
+                if (this.isEmpty()) {
+                    return ''
+                }
+                const keys = Object.keys(this.table)
+                let objString = `{${keys[0]} => ${this.table[keys[0]].toString()}}`
+                for (let i = 1; i < keys.length; i++) {
+                    objString = `${objString},{${keys[i]} => ${this.table[keys[i]].toString()}}`
+                }
+                return objString
+            }
+        }
+
+        const hash = new HashTable()
+        hash.put('Jack', 'jack@email.com')          //Jack的散列值为7
+        hash.put('Jonathan', 'Jonathan@email.com')  //Jonathan的散列值为5
+        hash.put('Jamie', 'Jamie@email.com')        //Jamie的散列值为5
+        hash.put('Athelstan')                       //Athelstan的散列值为7
+
+        console.log(hash.table)
+        console.log(hash.toString()) //{5 => [#Jamie: Jamie@email.com]},{7 => [#Jack: jack@email.com]}
+        
+        
+        //使用上述方法最后得到的结果会发生冲突事件，这样有相同散列值的数据就会被最后一个数据所覆盖。当发生这种情况就要去解决。
+        //通常由几种方法可以处理冲突: 分离链接、线性探查和双散列法。
+
+        
     </script>
 </body>
 

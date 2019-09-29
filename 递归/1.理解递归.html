@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //js调用栈大小的限制，忘记给函数递归调用加基线条件，也就是停止条件。会发生什么？
+        //递归并不会无限的执行下去，浏览器会抛出错误，也就是所说的栈溢出错误。
+         function fn(n) {
+            console.trace()
+            if (n === 1) {
+                return 1
+            }
+            return n * fn(n-1)
+         }
+         console.log(fn(3))   //栈将会爆掉
+    </script>
+</body>
+</html>

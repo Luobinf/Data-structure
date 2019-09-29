@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>分离链接法来处理冲突</title>
+</head>
+
+<body>
+    <script>
+        //一.分离链接
+        //分离链接法包括为散列表的每一个位置创建一个链表并将元素存储在里面。它是解决冲突的最简单的方法，但是在HashTable实例
+        //之外还需要额外的空间。
+
+        //二.声明HashTableSeparateChaining的基本结构
+
+        function defaultToString(item) {
+            if (item === null) {
+                return 'NULL'
+            } else if (item === undefined) {
+                return 'UNDEFINED'
+            } else if (typeof item === 'string' || item instanceof String) {
+                return `${item}`
+            } else {
+                return item.toString()
+            }
+        }
+
+        class valuePair {
+            constructor(key, value) {
+                this.key = key
+                this.value = value
+            }
+            toString() {
+                return `[#${this.key}: ${this.value}]`
+            }
+        }
+
+        class Node {
+            constructor(element) {
+                this.element = element
+                this.next = undefined
+            }
+        }
+
+        class LinkedList {
+            constructor() {
+                this.count = 0
+                this.head = undefined
+            }
+
+            push(element) {
+                const node = new Node(element)
+                let current
+                if (this.head == null) {
+                    this.head = node
+                } else {
+                    //如果链表中已经有元素存在，那么需要先拿到链表的最后一个元素，再将最后一个元素的next属性指向当前push进去的这个元素。
+                    current = this.head
+                    while (current.next != null) {
+                        current = current.next      //首先需要获取链表中的最后一项
+                    }
+                    current.next = node     //将最后一项的next属性赋为新元素，既将元素添加到链表中去。
+                }
+                this.count++
+            }
+
+            getElementAt(index) {
+                if (0 <= index && index <= this.count) {
+                    let current = this.head
+                    for (let i = 0; i < index && current != null; i++) {
+                        current = current.next
+                    }
+                    return current
+                } else {
+                    return undefined
+                }
+            }
+
+            removeAt(index) {
+                if (0 <= index && index < this.count) {
+                    let current = this.head
+
+                    if (index === 0) {
+                        this.head = current.next
+                    } else {
+                        let previous = this.getElementAt(index - 1)
+                        current = previous.next
+                        previous.next = current.next
+                    }
+                    this.count--
+                    return current.element
+                } else {
+                    return undefined
+                }
+            }
+
+            //在链表任意位置插入元素
+            insert(element, index) {
+                if (0 <= index && index <= this.count) {
+                    const node = new Node(element)
+
+                    if (index === 0) {
+                        const current = this.head
+                        this.head = node
+                        node.next = current
+                    } else {
+                        const previous = this.getElementAt(index - 1)
+                        const current = previous.next
+                        previous.next = node
+                        node.next = current
+                    }
+                    this.count++    //更新链表长度
+                    return true
+                }
+                return false
+            }
+
+            //返回元素在链表中的索引，若没有该元素则返回-1
+            indexOf(element) {
+                let current = this.head
+                for (let i = 0; i < this.count && current != null; i++) {
+                    if (element === current.element) {
+                        return i
+                    }
+                    current = current.next
+                }
+                return -1
+            }
+
+            //从链表中移除元素
+            remove(element) {
+                const index = this.indexOf(element)
+                return this.removeAt(index)
+            }
+
+            size() {
+                return this.count
+            }
+
+            isEmpty() {
+                return this.size() === 0
+            }
+
+            getHead() {
+                return this.head
+            }
+
+            toString() {
+                if (this.head == null) {
+                    return ''
+                }
+                let objString = `${this.head.element}`
+                let current = this.head.next
+
+                for (let i = 0; i < this.count && current != null; i++) {
+                    objString = `${objString},${current.element}`
+                    current = current.next
+                }
+                return objString
+            }
+        }
+
+
+
+        //使用分离链接法来处理冲突。
+        class HashTableSeparateChaining {
+            constructor(toStrFn = defaultToString) {
+                this.toStrFn = toStrFn
+                this.table = {}
+            }
+
+            loseloseHashCode(key) {
+                if (typeof key === 'number') {
+                    return key
+                }
+                const tableKey = this.toStrFn(key)
+                let hash = 0
+                for (let i = 0; i < tableKey.length; i++) {
+                    hash += tableKey.charCodeAt(i)
+                }
+                return hash % 37
+            }
+
+            hashCode(key) {
+                return this.loseloseHashCode(key)
+            }
+
+            //put方法用于将键和值加入散列表
+            put(key, value) {
+                if (key != null && value != null) {
+                    const position = this.hashCode(key) //这一步是为了获取散列值
+                    if (this.table[position] == null) {
+                        this.table[position] = new LinkedList()
+                    }
+                    this.table[position].push(new valuePair(key, value))
+                    return true
+                } else {
+                    return false
+                }
+            }
+
+            //get方法用于获取给定键所对应的值
+            get (key) {
+                const position = this.hashCode(key)
+                const linkedList = this.table[position]
+                if (linkedList != null && !linkedList.isEmpty()) {
+                    let current = linkedList.getHead()
+                    while (current != null) {
+                        if (current.element.key === key) {
+                            return current.element.value
+                        }
+                        current = current.next
+                    }
+                } else {
+                    return undefined   
+                }
+            }
+
+            remove (key) {
+                const position = this.hashCode(key)
+                const linkedList = this.table[position]
+                if (linkedList != null && !linkedList.isEmpty()) {
+                    let current = linkedList.getHead()
+                    while (current != null) {
+                        if (current.element.key === key) {
+                            linkedList.remove(current.element)
+                            if (linkedList.isEmpty()) {
+                                delete this.table[position]
+                            }
+                            return true
+                        }
+                        current = current.next
+                    }
+                } else {
+                    return false
+                }
+            }
+        }
+
+        let hashTableSeperate = new HashTableSeparateChaining()
+        hashTableSeperate.put('Jack','senior')
+        hashTableSeperate.put('Athelstan', 'haha')
+        hashTableSeperate.put('lb','little')
+        hashTableSeperate.put('fjq','excellent')
+        console.log(hashTableSeperate.table)
+    </script>
+</body>
+
+</html>
